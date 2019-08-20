@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_login import LoginManager
 import models
 
+from api.user import user
 
 DEBUG = True
 PORT = 8000
@@ -23,6 +24,10 @@ def load_user(user_id):
 		return models.User.get(models.User.id == user_id)
 	except models.DoesNotExist:
 		return None
+
+CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
+
+app.register_blueprint(user)
 
 @app.before_request
 def before_request():
