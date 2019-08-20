@@ -110,3 +110,27 @@ def login():
 
 
 
+
+
+# show/GET route (show profile)
+####################################################
+@user.route('/<id>', methods=['GET'])
+def show_user(id):
+
+	try:
+
+		user = User.get_by_id(id)
+		user_dict = model_to_dict(user)
+
+		return jsonify(data = user_dict, 
+			status={'code': 200, 
+				'message': 'User found on resource.'})
+
+	except DoesNotExist:
+
+		return jsonify(data={}, 
+			status={'code': 401, 
+				'message': 'Error accessing resource.'})
+
+
+
