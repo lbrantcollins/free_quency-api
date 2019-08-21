@@ -13,25 +13,45 @@ favorite = Blueprint('favorites', 'favorite', url_prefix='/favorite')
 @favorite.route('/', methods=['POST'])
 def create_favorite():
 
-	# must send media id with payload when favorite button clicked
-	# the following assumes payload includes media_id and timestamp
-	payload = request.form.to_dict()
-	current_user_id = model_to_dict(current_user)['id']
-	payload['user_id'] = current_user_id
+	try:
 
-	favorite = Favorite.create(**payload)
+		# Must send media id with payload when favorite button clicked.
+		# The following assumes payload includes media_id and timestamp.
+		payload = request.form.to_dict()
+		
+		# id of currently logged-in user is foreign key for favorite
+		current_user_id = model_to_dict(current_user)['id']
+		payload['user_id'] = current_user_id
 
-	favorite_dict = model_to_dict(favorite)
+		favorite = Favorite.create(**payload)
+
+		favorite_dict = model_to_dict(favorite)
+
+	except:
+		
+		return jsonify(data={}, status={"code": 401, 
+		"message": "Error: Resource not created"})
+
 
 	return jsonify(data=favorite_dict, status={"code": 200, 
 		"message": "Resource added"})
 
+
+
 # DELETE a favorite ("un-favorite" a media entry)
+######################################################
 @favorite.route('/<id>', methods=['DELETE'])
 def delete_favorite(id):
 
-	query = Favorite.delete().where(Favorite.id == id)
-	query.execute()
+	try:
+
+		query = Favorite.delete().where(Favorite.id == id)
+		query.execute()
+
+	except:
+
+		return jsonify(data={}, status={"code": 401, 
+		"message": "Error: Resource not deleted"})
 
 	return jsonify(data={}, status={"code": 200, 
 		"message": "Resource deleted"})
