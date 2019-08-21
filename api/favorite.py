@@ -16,8 +16,8 @@ def create_favorite():
 	# must send media id with payload when favorite button clicked
 	# the following assumes payload includes media_id and timestamp
 	payload = request.form.to_dict()
-	user_id = model_to_dict(current_user)['id']
-	payload['user_id'] = user_id
+	current_user_id = model_to_dict(current_user)['id']
+	payload['user_id'] = current_user_id
 
 	favorite = Favorite.create(**payload)
 
@@ -27,19 +27,14 @@ def create_favorite():
 		"message": "Resource added"})
 
 # DELETE a favorite ("un-favorite" a media entry)
-@favorite.route('/', methods=['DELETE'])
-def delete_favorite():
+@favorite.route('/<id>', methods=['DELETE'])
+def delete_favorite(id):
 
-	# must send media id with payload when favorite button clicked
-	# the following assumes payload includes media_id
-	payload = request.form.to_dict()
-	user_id = model_to_dict(current_user)['id']
-
-	query = Favorite.delete().where(
-		Favorite.user_id == user_id and 
-		Favorite.media_id == payload['media_id']
-		)
+	query = Favorite.delete().where(Favorite.id == id)
 	query.execute()
+
+	return jsonify(data={}, status={"code": 200, 
+		"message": "Resource deleted"})
 
 
 
