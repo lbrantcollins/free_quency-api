@@ -120,6 +120,9 @@ def login():
 # Logout (GET) route
 ####################################################
 @user.route('/logout', methods=['GET'])
+def logout():
+	logout_user()
+	return redirect('/')
 
 # show/GET route (show profile)
 ####################################################
@@ -132,6 +135,8 @@ def show_user(id):
 
 		user = User.get_by_id(id)
 		user_dict = model_to_dict(user)
+
+		del user_dict['password']
 
 		return jsonify(data = user_dict, status={'code': 200, 
 			'message': 'User found on resource.'})
