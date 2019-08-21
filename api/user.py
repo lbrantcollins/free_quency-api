@@ -12,7 +12,7 @@ import base64
 from flask import Blueprint, request, jsonify, url_for, send_file
 
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 from playhouse.shortcuts import model_to_dict
 
 # set default url path for users (register blueprint in app.py)
@@ -122,8 +122,9 @@ def login():
 @user.route('/logout', methods=['GET'])
 def logout():
 	logout_user()
-	return redirect('/')
-	
+
+	return jsonify(data={}, status={'code': 200, 'message': 'User logged out.'})
+
 
 # show/GET route (show profile)
 ####################################################
@@ -171,14 +172,16 @@ def update_user(id):
 			pay_file = request.files.to_dict()
 			payload['image'] = save_picture(pay_file) 
 		# do we need an else here?
-		else:
-			payload['image'] = user['image']
+		# else:
+			# payload['image'] = user['image']
+
+		payload['password'] = generate_password_hash(payload['password'])
 
 
 		query = User.update(**payload).where(User.id == id)
 		query.execute()
 
-		updated_user = User.get_by_id(id).to_dict()
+		updated_user = model_to_dict(User.get_by_id(id))
 
 		return jsonify(data=updated_user, status={'code': 200, 
 			'message': 'User successfully updated.'})

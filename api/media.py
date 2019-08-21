@@ -12,6 +12,8 @@ def add_media():
 
 	payload = request.form.to_dict()
 
+	print(payload,'payload')
+
 	if 'www.youtube.com/watch?v=' in payload['url']:
 		payload['media_type'] = 'video'
 	else:

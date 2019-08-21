@@ -21,13 +21,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-	url_id = ''
 
-	for i, character in 'https://www.youtube.com/watch?v=85-F7wkUaiM':
-		if i > payload['url'].length:
-			url_id += character
-
-	print(url_id)
 	try:
 		return models.User.get(models.User.id == user_id)
 	except models.DoesNotExist:
