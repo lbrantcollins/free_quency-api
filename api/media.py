@@ -65,4 +65,14 @@ def get_one_media(id):
 		return jsonify(data={}, status={"code": 401, "message": "There was an error getting the resource"})
 
 
+@media.route('/<id>', methods=['Delete'])
+def delete_media(id):
 
+	try:
+		query = Media.delete().where(Media.id == id)
+		query.execute()
+
+		return jsonify(data={}, status={"code": 200, "message": "resource deleted"})
+
+	except Media.DoesNotExist:
+		return jsonify(data={}, status={"code": 401, "message": "There is no media at that id"})
