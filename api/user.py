@@ -25,7 +25,7 @@ def save_picture(form_picture):
 
 	string = picture_byte.decode()
 
-	return string
+	return 'data:image/png;base64,{}'.format(string)
 
 
 # Register (POST) route
@@ -33,16 +33,18 @@ def save_picture(form_picture):
 @user.route('/register', methods=['POST'])
 def register():
 
-	print('REGISTER HIT')
-
-	# multipart form data (text fields and an image file)
 	payload = request.form.to_dict()
 
-	pay_file = request.files
-	dict_file = pay_file.to_dict()
+	if len(request.files.to_dict()):
+		pay_file = request.files
+		dict_file = pay_file.to_dict()
+		payload['image'] = save_picture(dict_file)
+	else:
+		payload['image'] = 'static/images/default.jpg'		
+
+	# multipart form data (text fields and an image file)
 
 	payload['email'].lower()
-	payload['image'] = save_picture(dict_file)
 
 	print(payload)
 
@@ -109,11 +111,6 @@ def login():
 
 		# we reach this point if username does not exist
 		return jsonify(data={}, status={'code': 401, 'message': 'Username or password is incorrect.'})
-
-
-
-
-
 
 
 

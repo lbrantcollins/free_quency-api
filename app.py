@@ -4,16 +4,16 @@ from flask_login import LoginManager
 import models
 
 from api.user import user
-# from api.media import media
+from api.media import media
 
 DEBUG = True
 PORT = 8000
 
 login_manager = LoginManager()
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder="static")
 
-# app.config.from_pyfile('./instance/config.py')
+app.config.from_pyfile('./instance/config.py')
 
 app.secret_key = 'SECRET_KEY'
 
@@ -34,10 +34,10 @@ def load_user(user_id):
 		return None
 
 CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
-# CORS(media, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(media, origins=['http://localhost:3000'], supports_credentials=True)
 
 app.register_blueprint(user)
-# app.register_blueprint(media)
+app.register_blueprint(media)
 
 @app.before_request
 def before_request():
