@@ -1,6 +1,7 @@
 from models import Media, Comment, Favorite
 
 from flask import Blueprint, request, jsonify, url_for, send_file
+from flask_login import current_user
 
 from playhouse.shortcuts import model_to_dict
 
@@ -11,11 +12,11 @@ media = Blueprint('medias', 'media', url_prefix='/media')
 def add_media():
 
 	try:
-
-
 		payload = request.form.to_dict()
+		print('ADD MEDIA')
 
-		payload['user_id'] = model_to_dict(current_user)['id']
+		payload['user_id'] = str(model_to_dict(current_user)['id'])
+
 
 		if 'www.youtube.com/watch?v=' in payload['url']:
 			payload['media_type'] = 'video'
@@ -40,6 +41,7 @@ def add_media():
 			payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
 
 
+		print(payload,'payload')
 		media = Media.create(**payload)
 
 		media_dict = model_to_dict(media)

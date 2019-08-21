@@ -9,7 +9,7 @@ class User(UserMixin, Model):
 	email = CharField()
 	password = CharField()
 	image = CharField()
-	about_me = CharField()
+	about_me = CharField(null=True)
 	created_at = DateTimeField(default=datetime.datetime.now)
 
 	class Meta:
@@ -18,7 +18,7 @@ class User(UserMixin, Model):
 class Media(Model):
 	user_id = ForeignKeyField(User, backref='posts')
 	title = CharField()
-	description = CharField()
+	description = CharField(null=True)
 	url = CharField()
 	media_type = CharField()
 	full_html = CharField()

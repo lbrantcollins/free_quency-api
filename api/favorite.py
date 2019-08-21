@@ -57,7 +57,12 @@ def delete_favorite(id):
 		"message": "Resource deleted"})
 
 
+@favorite.route('/', methods=['GET'])
+def get_all_favs():
 
+	favorites = [model_to_dict(favorite) for favorite in Favorite.select()]
+
+	return jsonify(data=favorites, status={'code': 201, 'message': 'Success'})
 
 
 

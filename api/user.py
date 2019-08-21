@@ -131,13 +131,52 @@ def show_user(id):
 	try:
 
 		user = User.get_by_id(id)
+
+		medias = Media.select().where(Media.user_id == id)
+
+		medias_dict = [model_to_dict(media) for media in medias]
+
+		for media in medias_dict:
+			comments = Comment.select().where(Comment.media_id == media['id'])
+			comments_dict = [model_to_dict(comment) for comment in comments]
+			media['comments'] = comments_dict
+
+			favorites = Favorite.select().where(Favorite.media_id == media['id'])
+			favorites_dict = [model_to_dict(favorite) for favorite in favorites]
+			media['favorites'] = favorites_dict
+
+
+		favorites = Favorite.select().where(Favorite.user_id == id)	
+
+		favorites_media = [favorite.media_id for favorite in favorites]
+
+		fav_dict = [model_to_dict(favorite) for favorite in favorites_media]
+
+		# print(favorites_dict)
+
+		for fav in fav_dict:
+			comments = Comment.select().where(Comment.media_id == fav['id'])
+			comments_dict = [model_to_dict(comment) for comment in comments]
+			fav['comments'] = comments_dict
+			print(fav, 'FAVS')
+
+			favorites = Favorite.select().where(Favorite.media_id == fav['id'])
+			favorites_dict = [model_to_dict(favorite) for favorite in favorites]
+			fav['favorites'] = favorites_dict
+
+
 		user_dict = model_to_dict(user)
+
+		user_dict['posted_media'] = medias_dict
+		user_dict['favorited_media'] = fav_dict
+
+		# print(user_dict, 'user_dict')
 
 		del user_dict['password']
 
-		#################
-		# Need to join with users posted media (with comments and fav counts), plus join to user's favorited media (with comments, fav counts). Also, comments need to join with user to associate username with each comment. 
-		#################
+	# 	#################
+	# 	# Need to join with users posted media (with comments and fav counts), plus join to user's favorited media (with comments, fav counts). Also, comments need to join with user to associate username with each comment. 
+	# 	#################
 
 		return jsonify(data = user_dict, status={'code': 200, 
 			'message': 'User found on resource.'})
