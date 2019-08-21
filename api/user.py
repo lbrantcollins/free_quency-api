@@ -1,4 +1,7 @@
 from models import User
+from models import Media
+from models import Comment
+from models import Favorite
 
 import os
 import sys
@@ -79,6 +82,7 @@ def register():
 			return jsonify(data=user_dict, status={'code': 201, 'message': 'Success'}) 
 
 # Login (GET) route
+####################################################
 @user.route('/login', methods=['GET'])
 def login():
 
@@ -113,7 +117,9 @@ def login():
 		return jsonify(data={}, status={'code': 401, 'message': 'Username or password is incorrect.'})
 
 
-
+# Logout (GET) route
+####################################################
+@user.route('/logout', methods=['GET'])
 
 # show/GET route (show profile)
 ####################################################
@@ -121,6 +127,8 @@ def login():
 def show_user(id):
 
 	try:
+		#################
+		# also get comments and favorites
 
 		user = User.get_by_id(id)
 		user_dict = model_to_dict(user)
@@ -140,34 +148,24 @@ def show_user(id):
 def update_user(id):
 
 	try:
+		# get current user data populate image if not changed
+		user = User.get_by_id(id)
 
 		# multipart form data (text fields and an image file)
 
 		# text fields
-
 		payload = request.form.to_dict()
 
 		# image file
+		# check if new image file was submitted
+		# if so, encode image for storage in the database
+		if len(request.files.to_dict()):
+			pay_file = request.files.to_dict()
+			payload['image'] = save_picture(pay_file) 
+		# do we need an else here?
+		else:
+			payload['image'] = user['image']
 
-		# it seems there would need to be a way to determine
-		# if the image has been changed or not by the user.
-		# If no change, code wrapped in #------# below is not needed
-		# (because the database already holds an encoded image,
-		# or there is no image loaded by the user)
-
-		# Perhaps on edit page... 
-		# user first clicks a "change image" button.
-		# which returns a 'new_image' boolean back here thru the payload?
-		# payload['new_image'] = True or False
-
-		# On submit of the "change image" button, 
-		# then we would display a "choose file" button?
-
-		#--------------------------#
-		if payload['new_image']:
-			payload_file = request.files.to_dict()
-			payload['image'] = base64.b64encode(payload_file['file'].read())
-		#--------------------------#
 
 		User.update(**payload).where(User.id == id)
 
