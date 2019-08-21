@@ -123,6 +123,7 @@ def login():
 def logout():
 	logout_user()
 	return redirect('/')
+	
 
 # show/GET route (show profile)
 ####################################################
@@ -143,7 +144,7 @@ def show_user(id):
 		return jsonify(data = user_dict, status={'code': 200, 
 			'message': 'User found on resource.'})
 
-	except DoesNotExist:
+	except User.DoesNotExist:
 
 		return jsonify(data={}, status={'code': 401, 
 			'message': 'User not found on resource.'})
@@ -182,7 +183,7 @@ def update_user(id):
 		return jsonify(data=updated_user, status={'code': 200, 
 			'message': 'User successfully updated.'})
 		
-	except DoesNotExist:
+	except User.DoesNotExist:
 
 		return jsonify(data={}, status={'code': 401, 
 			'message': 'User not found on resource.'})
