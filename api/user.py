@@ -130,13 +130,15 @@ def logout():
 def show_user(id):
 
 	try:
-		#################
-		# also get comments and favorites
 
 		user = User.get_by_id(id)
 		user_dict = model_to_dict(user)
 
 		del user_dict['password']
+
+		#################
+		# Need to join with users posted media (with comments and fav counts), plus join to user's favorited media (with comments, fav counts). Also, comments need to join with user to associate username with each comment. 
+		#################
 
 		return jsonify(data = user_dict, status={'code': 200, 
 			'message': 'User found on resource.'})
@@ -172,7 +174,8 @@ def update_user(id):
 			payload['image'] = user['image']
 
 
-		User.update(**payload).where(User.id == id)
+		query = User.update(**payload).where(User.id == id)
+		query.execute()
 
 		updated_user = User.get_by_id(id).to_dict()
 
@@ -183,6 +186,21 @@ def update_user(id):
 
 		return jsonify(data={}, status={'code': 401, 
 			'message': 'User not found on resource.'})
+
+# destroy/DELETE route (delete user and all assoc data)
+####################################################
+@user.route('/<id>', methods=['DELETE'])
+def delete_user(id):
+
+	User.delete().where(User.id == id).execute()
+	Media.delete().where(Media.user_id == id).execute()
+	Favorite.delete().where(Favorite.user_id== id).execute()
+	Comment.delete().where(Comment.user_id == id).execute()
+
+	return jsonify(data={}, status={'code': 200,
+		'message': 'User deleted from all resources'})
+
+
 
 
 
