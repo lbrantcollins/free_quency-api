@@ -130,7 +130,53 @@ def show_user(id):
 
 		return jsonify(data={}, 
 			status={'code': 401, 
-				'message': 'Error accessing resource.'})
+				'message': 'User not found on resource.'})
+
+
+# edit/PUT route (edit profile)
+####################################################
+@user.route('/<id>', methods=['PUT'])
+def update_user(id):
+
+	try:
+
+		# multipart form data (text fields and an image file)
+
+		# text fields
+		payload = request.form.to_dict()
+
+		# image file
+		# it seems there would need to be a way to determine
+		# if the image has been changed or not by the user.
+		# If no change, code wrapped in #------# below is not needed
+		# (because the database already holds an encoded image)
+
+		# Perhaps on edit page... 
+		# user first clicks a "change image" button.
+		# which returns a 'new_image' boolean back here thru the payload?
+		# payload['new_image'] = True or False
+
+		# On submit of the "change image" button, 
+		# then we would display a "choose file" button?
+
+		#--------------------------#
+		if payload['new_image']:
+
+			payload_file = request.files.to_dict()
+			payload['image'] = base64.b64encode(payload_file['file'].read())
+
+		else:
+			# we don't need to do anything because the database
+			# already holds the user's existing encoded image (if any)
+		#--------------------------#
+
+		User.put()
+		
+	except DoesNotExist:
+
+		return jsonify(data={}, 
+			status={'code': 401, 
+				'message': 'User not found on resource.'})
 
 
 
