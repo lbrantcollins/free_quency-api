@@ -42,5 +42,16 @@ def add_media():
 	return jsonify(data=media_dict, status={'code': 201, 'message': 'Success'}) 
 
 
+@media.route('/', methods=['GET'])
+def get_all_media():
+
+	try:
+		all_media = [ model_to_dict(media) for media in Media.select()]
+
+		return jsonify(data=all_media, status={"code": 200, "message": "Success"})
+
+	except models.DoesNotExist:
+		return jsonify(data={}, status={"code": 401, "message": "There was an error getting the resource"})
+
 
 
