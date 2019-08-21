@@ -1,4 +1,4 @@
-from models import Media
+from models import Media, Comment, Favorite
 
 from flask import Blueprint, request, jsonify, url_for, send_file
 
@@ -10,38 +10,43 @@ media = Blueprint('medias', 'media', url_prefix='/media')
 @media.route('/', methods=['POST'])
 def add_media():
 
-	payload = request.form.to_dict()
-
-	print(payload,'payload')
-
-	if 'www.youtube.com/watch?v=' in payload['url']:
-		payload['media_type'] = 'video'
-	else:
-		return jsonify(data={}, status={'code': 401, 'message': 'URL input is not valid.'})
-	
-	if payload['media_type'] == 'video':
+	try:
 
 
-		v_location = payload['url'].index('v')
+		payload = request.form.to_dict()
 
-		eq_location = payload['url'].index('=')
+		payload['user_id'] = model_to_dict(current_user)['id']
 
-		if eq_location == v_location + 1:
-			url_id = payload['url'][eq_location + 1: eq_location + 12]
+		if 'www.youtube.com/watch?v=' in payload['url']:
+			payload['media_type'] = 'video'
 		else:
 			return jsonify(data={}, status={'code': 401, 'message': 'URL input is not valid.'})
+		
+		if payload['media_type'] == 'video':
 
 
-		payload['full_html'] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'.format(url_id)
+			v_location = payload['url'].index('v')
 
-		payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
+			eq_location = payload['url'].index('=')
+
+			if eq_location == v_location + 1:
+				url_id = payload['url'][eq_location + 1: eq_location + 12]
+			else:
+				return jsonify(data={}, status={'code': 401, 'message': 'URL input is not valid.'})
 
 
-	media = Media.create(**payload)
+			payload['full_html'] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'.format(url_id)
 
-	media_dict = model_to_dict(media)
+			payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
 
-	return jsonify(data=media_dict, status={'code': 201, 'message': 'Success'}) 
+
+		media = Media.create(**payload)
+
+		media_dict = model_to_dict(media)
+
+		return jsonify(data=media_dict, status={'code': 201, 'message': 'Success'}) 
+	except:
+		return jsonify(data={}, status={'code': 401, 'message': 'Something went wrong!'})
 
 
 @media.route('/', methods=['GET'])
@@ -73,6 +78,12 @@ def delete_media(id):
 	try:
 		query = Media.delete().where(Media.id == id)
 		query.execute()
+
+		query2 = Comment.delete().where(Comment.media_id == id)
+		query2.execute()
+
+		query3 = Favorite.delete().where(Favorite.media_id == id)
+		query3.execute()
 
 		return jsonify(data={}, status={"code": 200, "message": "resource deleted"})
 
