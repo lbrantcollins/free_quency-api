@@ -122,15 +122,13 @@ def show_user(id):
 		user = User.get_by_id(id)
 		user_dict = model_to_dict(user)
 
-		return jsonify(data = user_dict, 
-			status={'code': 200, 
-				'message': 'User found on resource.'})
+		return jsonify(data = user_dict, status={'code': 200, 
+			'message': 'User found on resource.'})
 
 	except DoesNotExist:
 
-		return jsonify(data={}, 
-			status={'code': 401, 
-				'message': 'User not found on resource.'})
+		return jsonify(data={}, status={'code': 401, 
+			'message': 'User not found on resource.'})
 
 
 # edit/PUT route (edit profile)
@@ -143,13 +141,16 @@ def update_user(id):
 		# multipart form data (text fields and an image file)
 
 		# text fields
+
 		payload = request.form.to_dict()
 
 		# image file
+
 		# it seems there would need to be a way to determine
 		# if the image has been changed or not by the user.
 		# If no change, code wrapped in #------# below is not needed
-		# (because the database already holds an encoded image)
+		# (because the database already holds an encoded image,
+		# or there is no image loaded by the user)
 
 		# Perhaps on edit page... 
 		# user first clicks a "change image" button.
@@ -161,22 +162,21 @@ def update_user(id):
 
 		#--------------------------#
 		if payload['new_image']:
-
 			payload_file = request.files.to_dict()
 			payload['image'] = base64.b64encode(payload_file['file'].read())
-
-		else:
-			# we don't need to do anything because the database
-			# already holds the user's existing encoded image (if any)
 		#--------------------------#
 
-		User.put()
+		User.update(**payload).where(User.id == id)
+
+		updated_user = User.get_by_id(id).to_dict()
+
+		return jsonify(data=updated_user, status={'code': 200, 
+			'message': 'User successfully updated.'})
 		
 	except DoesNotExist:
 
-		return jsonify(data={}, 
-			status={'code': 401, 
-				'message': 'User not found on resource.'})
+		return jsonify(data={}, status={'code': 401, 
+			'message': 'User not found on resource.'})
 
 
 

@@ -12,7 +12,7 @@ login_manager = LoginManager()
 
 app = Flask(__name__)
 
-app.config.from_pyfile('./instance/config.py')
+# app.config.from_pyfile('./instance/config.py')
 
 app.secret_key = 'SECRET_KEY'
 
