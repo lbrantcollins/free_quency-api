@@ -125,6 +125,7 @@ def logout():
 
 	return jsonify(data={}, status={'code': 200, 'message': 'User logged out.'})
 
+
 # show/GET route (show profile)
 ####################################################
 @user.route('/<id>', methods=['GET'])
@@ -144,7 +145,7 @@ def show_user(id):
 		return jsonify(data = user_dict, status={'code': 200, 
 			'message': 'User found on resource.'})
 
-	except DoesNotExist:
+	except User.DoesNotExist:
 
 		return jsonify(data={}, status={'code': 401, 
 			'message': 'User not found on resource.'})
