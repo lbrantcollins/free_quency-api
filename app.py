@@ -5,6 +5,7 @@ import models
 
 from api.user import user
 from api.media import media
+from api.comment import comment
 
 DEBUG = True
 PORT = 8000
@@ -29,9 +30,11 @@ def load_user(user_id):
 
 CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(media, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(comment, origins=['http://localhost:3000'], supports_credentials=True)
 
 app.register_blueprint(user)
 app.register_blueprint(media)
+app.register_blueprint(comment)
 
 @app.before_request
 def before_request():

@@ -1,7 +1,4 @@
-from models import User
-from models import Media
-from models import Comment
-from models import Favorite
+from models import User, Media, Comment, Favorite
 
 import os
 import sys
