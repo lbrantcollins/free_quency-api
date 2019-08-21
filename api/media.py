@@ -50,7 +50,18 @@ def get_all_media():
 
 		return jsonify(data=all_media, status={"code": 200, "message": "Success"})
 
-	except models.DoesNotExist:
+	except Media.DoesNotExist:
+		return jsonify(data={}, status={"code": 401, "message": "There was an error getting the resource"})
+
+@media.route('/<id>', methods=['GET'])
+def get_one_media(id):
+
+	try:
+		media = model_to_dict(Media.get_by_id(id))
+
+		return jsonify(data=media, status={"code": 200, "message": "Success"})
+
+	except Media.DoesNotExist:
 		return jsonify(data={}, status={"code": 401, "message": "There was an error getting the resource"})
 
 
