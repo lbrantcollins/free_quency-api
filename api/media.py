@@ -78,3 +78,40 @@ def delete_media(id):
 
 	except Media.DoesNotExist:
 		return jsonify(data={}, status={"code": 401, "message": "There is no media at that id"})
+
+
+@media.route('/<id>', methods=['PUT'])
+def update_media(id):
+
+	payload = request.form.to_dict()
+
+	if 'www.youtube.com/watch?v=' in payload['url']:
+		payload['media_type'] = 'video'
+	else:
+		return jsonify(data={}, status={'code': 401, 'message': 'URL input is not valid.'})
+	
+	if payload['media_type'] == 'video':
+
+
+		v_location = payload['url'].index('v')
+
+		eq_location = payload['url'].index('=')
+
+		if eq_location == v_location + 1:
+			url_id = payload['url'][eq_location + 1: eq_location + 12]
+		else:
+			return jsonify(data={}, status={'code': 401, 'message': 'URL input is not valid.'})
+
+
+		payload['full_html'] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'.format(url_id)
+
+		payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
+
+
+	query = Media.update(**payload).where(Media.id == id)
+	query.execute()
+
+	media_dict = model_to_dict(Media.get_by_id(id))
+
+	return jsonify(data=media_dict, status={'code': 201, 'message': 'Success'}) 
+
