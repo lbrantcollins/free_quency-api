@@ -1,5 +1,5 @@
 .env
 _pycache_
 instance
-__pycache__
+__pycache__/
 free_quency.sqlite

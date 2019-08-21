@@ -23,9 +23,9 @@ def save_picture(form_picture):
 
 	# print(str)
 
-	str = picture_byte.decode()
+	string = picture_byte.decode()
 
-	return str
+	return string
 
 
 # Register (POST) route
@@ -34,14 +34,6 @@ def save_picture(form_picture):
 def register():
 
 	print('REGISTER HIT')
-	url_id = ''
-
-	for i, character in enumerate('https://www.youtube.com/watch?v=85-F7wkUaiM'):
-		if i > len('https://www.youtube.com/watch?v=85-F7wkUaiM') - 12:
-			print(character)
-			url_id += character
-
-	print(url_id, 'url_id')
 
 	# multipart form data (text fields and an image file)
 	payload = request.form.to_dict()
