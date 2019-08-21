@@ -4,6 +4,7 @@ from flask_login import LoginManager
 import models
 
 from api.user import user
+# from api.media import media
 
 DEBUG = True
 PORT = 8000
@@ -26,8 +27,10 @@ def load_user(user_id):
 		return None
 
 CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
+# CORS(media, origins=['http://localhost:3000'], supports_credentials=True)
 
 app.register_blueprint(user)
+# app.register_blueprint(media)
 
 @app.before_request
 def before_request():

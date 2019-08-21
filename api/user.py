@@ -19,9 +19,13 @@ def save_picture(form_picture):
 	print(form_picture)
 
 	# encode file as a string for storage in the database
-	str = base64.b64encode(form_picture['file'].read())
+	picture_byte = base64.b64encode(form_picture['file'].read())
 
-	print(str)
+	# print(str)
+
+	str = picture_byte.decode()
+
+	return str
 
 
 # Register (POST) route
@@ -36,39 +40,41 @@ def register():
 
 	pay_file = request.files
 	dict_file = pay_file.to_dict()
-	save_picture(dict_file)
 
+	payload['email'].lower()
+	payload['image'] = save_picture(dict_file)
 
+	print(payload)
 
-	# payload['email'].lower()
+	try:
 
-	# try:
+		User.get(User.email == payload['email'])
 
-	# 	User.get(User.email == payload['email'])
+		return jsonify(data={}, status={'code': 401, 'message': 'A User with that email already exists'})
 
-	# 	return jsonify(data={}, status={'code': 401, 'message': 'A User with that email already exists'})
+	except User.DoesNotExist:
 
-	# except DoesNotExist:
+		try:
 
-	# 	try:
+			User.get(User.username == payload['username'])
 
-	# 		User.get(User.username == payload['username'])
+			return jsonify(data={}, status={'code': 401, 'message': 'A User with that username already exists'})
 
-	# 		return jsonify(data={}, status={'code': 401, 'message': 'A User with that username already exists'})
+		except User.DoesNotExist:
 
-	# 	except DoesNotExist:
+			payload['password'] = generate_password_hash(payload['password'])
 
-	# 		payload['password'] = generate_password_hash(payload['password'])
+			user = User.create(**payload)
 
-	# 		user = User.create(**payload)
+			login_user(user)
 
-	# 		login_user(user)
+			user_dict = model_to_dict(user)
 
-	# 		user_dict = model_to_dict(user)
+			del user_dict['password']
 
-	# 		del user_dict['password']
+			print(user_dict)
 
-	# 		return jsonify(data=user_dict, status={'code': 201, 'message': 'Success'}) 
+			return jsonify(data=user_dict, status={'code': 201, 'message': 'Success'}) 
 
 # Login (GET) route
 @user.route('/login', methods=['GET'])
@@ -99,7 +105,7 @@ def login():
 			return jsonify(data=user_dict, status={'code': 200, 'message': 'user logged in!'})
 
 
-	except DoesNotExist:
+	except User.DoesNotExist:
 
 		# we reach this point if username does not exist
 		return jsonify(data={}, status={'code': 401, 'message': 'Username or password is incorrect.'})
