@@ -198,9 +198,12 @@ def show_user(id):
 @user.route('/<id>', methods=['PUT'])
 def update_user(id):
 
+	print("PUT ROUTE EDIT PROFILE")
 	try:
 		# get current user data populate image if not changed
 		user = User.get_by_id(id)
+
+		updated_user = model_to_dict(User.get_by_id(id))
 
 		# multipart form data (text fields and an image file)
 
@@ -210,20 +213,23 @@ def update_user(id):
 		# image file
 		# check if new image file was submitted
 		# if so, encode image for storage in the database
+		print(request.files.to_dict())
 		if len(request.files.to_dict()):
-			pay_file = request.files.to_dict()
-			payload['image'] = save_picture(pay_file) 
-		# do we need an else here?
-		# else:
-			# payload['image'] = user['image']
+			pay_file = request.files
+			dict_file = pay_file.to_dict()
+			payload['image'] = save_picture(dict_file)
+		else:
+			payload['image'] = updated_user['image']	
 
-		payload['password'] = generate_password_hash(payload['password'])
+		if len(payload['password']):
+			payload['password'] = generate_password_hash(payload['password'])
+		else:
+			payload['password'] = updated_user['password']
 
 
 		query = User.update(**payload).where(User.id == id)
 		query.execute()
 
-		updated_user = model_to_dict(User.get_by_id(id))
 
 		return jsonify(data=updated_user, status={'code': 200, 
 			'message': 'User successfully updated.'})
