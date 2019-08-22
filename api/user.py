@@ -60,6 +60,8 @@ def register():
 
 			User.get(User.username == payload['username'])
 
+			print('A User with that username already exists')
+
 			return jsonify(data={}, status={'code': 401, 'message': 'A User with that username already exists'})
 
 		except User.DoesNotExist:
