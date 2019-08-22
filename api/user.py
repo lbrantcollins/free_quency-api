@@ -78,12 +78,16 @@ def register():
 
 			return jsonify(data=user_dict, status={'code': 201, 'message': 'Success'}) 
 
-# Login (GET) route
+# Login (POST) route
 ####################################################
-@user.route('/login', methods=['GET'])
+@user.route('/login', methods=['POST'])
 def login():
 
+	print('LOGIN')
+
 	payload = request.form.to_dict()
+
+	print(payload,'payload')
 
 	try:
 

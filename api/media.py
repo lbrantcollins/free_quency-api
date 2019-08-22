@@ -17,6 +17,7 @@ def add_media():
 
 		payload['user_id'] = str(model_to_dict(current_user)['id'])
 
+		print(payload,'payload')
 
 		if 'www.youtube.com/watch?v=' in payload['url']:
 			payload['media_type'] = 'video'
@@ -41,7 +42,6 @@ def add_media():
 			payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
 
 
-		print(payload,'payload')
 		media = Media.create(**payload)
 
 		media_dict = model_to_dict(media)
