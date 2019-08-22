@@ -40,7 +40,7 @@ def register():
 		dict_file = pay_file.to_dict()
 		payload['image'] = save_picture(dict_file)
 	else:
-		payload['image'] = 'static/images/default.jpg'		
+		payload['image'] = '../static/images/default.jpg'		
 
 	# multipart form data (text fields and an image file)
 
