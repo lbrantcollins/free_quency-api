@@ -144,11 +144,11 @@ def show_user(id):
 
 		for media in medias_dict:
 			comments = Comment.select().where(Comment.media_id == media['id'])
-			comments_dict = [model_to_dict(comment) for comment in comments]
+			comments_dict = [model_to_dict(comment, exclude=[Comment.user_id.password]) for comment in comments]
 			media['comments'] = comments_dict
 
 			favorites = Favorite.select().where(Favorite.media_id == media['id'])
-			favorites_dict = [model_to_dict(favorite) for favorite in favorites]
+			favorites_dict = [model_to_dict(favorite, exclude=[Favorite.user_id.password]) for favorite in favorites]
 			media['favorites'] = favorites_dict
 
 
@@ -162,12 +162,12 @@ def show_user(id):
 
 		for fav in fav_dict:
 			comments = Comment.select().where(Comment.media_id == fav['id'])
-			comments_dict = [model_to_dict(comment) for comment in comments]
+			comments_dict = [model_to_dict(comment, exclude=[Comment.user_id.password]) for comment in comments]
 			fav['comments'] = comments_dict
 			print(fav, 'FAVS')
 
 			favorites = Favorite.select().where(Favorite.media_id == fav['id'])
-			favorites_dict = [model_to_dict(favorite) for favorite in favorites]
+			favorites_dict = [model_to_dict(favorite, exclude=[Favorite.user_id.password]) for favorite in favorites]
 			fav['favorites'] = favorites_dict
 
 

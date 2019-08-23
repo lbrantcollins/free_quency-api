@@ -59,11 +59,11 @@ def get_all_media():
 
 		for media in all_media:
 			comments = Comment.select().where(Comment.media_id == media['id'])
-			comments_dict = [model_to_dict(comment, recurse=False) for comment in comments]
+			comments_dict = [model_to_dict(comment, exclude=[Comment.user_id.password]) for comment in comments]
 			media['comments'] = comments_dict
 
 			favorites = Favorite.select().where(Favorite.media_id == media['id'])
-			favorites_dict = [model_to_dict(favorite, recurse=False) for favorite in favorites]
+			favorites_dict = [model_to_dict(favorite, exclude=[Comment.user_id.password]) for favorite in favorites]
 			media['favorites'] = favorites_dict
 
 
@@ -78,6 +78,14 @@ def get_one_media(id):
 
 	try:
 		media = model_to_dict(Media.get_by_id(id))
+
+		comments = Comment.select().where(Comment.media_id == media['id'])
+		comments_dict = [model_to_dict(comment, exclude=[Comment.user_id.password]) for comment in comments]
+		media['comments'] = comments_dict
+
+		favorites = Favorite.select().where(Favorite.media_id == media['id'])
+		favorites_dict = [model_to_dict(favorite, exclude=[Comment.user_id.password]) for favorite in favorites]
+		media['favorites'] = favorites_dict
 
 		return jsonify(data=media, status={"code": 200, "message": "Success"})
 
