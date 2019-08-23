@@ -39,7 +39,7 @@ def add_media():
 
 			payload['full_html'] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'.format(url_id)
 
-			payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
+			payload['thumbnail_html'] = 'http://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(url_id)
 
 
 		media = Media.create(**payload)
@@ -129,7 +129,7 @@ def update_media(id):
 
 		payload['full_html'] = '<iframe width="560" height="315" src="https://www.youtube.com/embed/{}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'.format(url_id)
 
-		payload['thumbnail_html'] = '<img src="http://i.ytimg.com/vi/{}/maxresdefault.jpg" />'.format(url_id)
+		payload['thumbnail_html'] = 'http://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(url_id)
 
 
 	query = Media.update(**payload).where(Media.id == id)
