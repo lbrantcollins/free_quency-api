@@ -55,15 +55,15 @@ def add_media():
 def get_all_media():
 
 	try:
-		all_media = [ model_to_dict(media) for media in Media.select()]
+		all_media = [ model_to_dict(media, exclude=[Media.user_id.password]) for media in Media.select()]
 
 		for media in all_media:
 			comments = Comment.select().where(Comment.media_id == media['id'])
-			comments_dict = [model_to_dict(comment) for comment in comments]
+			comments_dict = [model_to_dict(comment, recurse=False) for comment in comments]
 			media['comments'] = comments_dict
 
 			favorites = Favorite.select().where(Favorite.media_id == media['id'])
-			favorites_dict = [model_to_dict(favorite) for favorite in favorites]
+			favorites_dict = [model_to_dict(favorite, recurse=False) for favorite in favorites]
 			media['favorites'] = favorites_dict
 
 
