@@ -215,23 +215,31 @@ def update_user(id):
 		# if so, encode image for storage in the database
 		print(request.files.to_dict())
 		if len(request.files.to_dict()):
+			print('photo change');
 			pay_file = request.files
 			dict_file = pay_file.to_dict()
 			payload['image'] = save_picture(dict_file)
 		else:
+			print('photo not changed');
+			del payload['file']
 			payload['image'] = updated_user['image']	
 
 		if len(payload['password']):
+			print('password updated')
 			payload['password'] = generate_password_hash(payload['password'])
 		else:
+			print('password not updated')
 			payload['password'] = updated_user['password']
 
+		# print(payload, 'payload')
 
 		query = User.update(**payload).where(User.id == id)
 		query.execute()
 
+		del payload['password']
 
-		return jsonify(data=updated_user, status={'code': 200, 
+
+		return jsonify(data=payload, status={'code': 200, 
 			'message': 'User successfully updated.'})
 		
 	except User.DoesNotExist:
