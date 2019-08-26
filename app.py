@@ -17,8 +17,6 @@ login_manager = LoginManager()
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
-app.config.from_pyfile('./instance/config.py')
-
 app.secret_key = 'SECRET_KEY'
 
 login_manager.init_app(app)
@@ -31,10 +29,10 @@ def load_user(user_id):
 	except models.DoesNotExist:
 		return None
 
-CORS(user, origins=['http://localhost:3000', "#  https://free--quency.herokuapp.com/"], supports_credentials=True)
-CORS(media, origins=['http://localhost:3000', "#  https://free--quency.herokuapp.com/"], supports_credentials=True)
-CORS(favorite, origins=['http://localhost:3000', "#  https://free--quency.herokuapp.com/"], supports_credentials=True)
-CORS(comment, origins=['http://localhost:3000', "#  https://free--quency.herokuapp.com/"], supports_credentials=True)
+CORS(user, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(media, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(favorite, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(comment, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
 
 app.register_blueprint(user)
 app.register_blueprint(media)
