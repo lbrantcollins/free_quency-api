@@ -13,11 +13,8 @@ def add_media():
 
 	try:
 		payload = request.form.to_dict()
-		print('ADD MEDIA')
 
 		payload['user_id'] = str(model_to_dict(current_user)['id'])
-
-		print(payload,'payload')
 
 		if 'www.youtube.com/watch?v=' in payload['url']:
 			payload['media_type'] = 'video'

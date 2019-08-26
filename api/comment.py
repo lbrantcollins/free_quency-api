@@ -15,8 +15,6 @@ def add_comment():
 
 	payload['user_id'] = model_to_dict(current_user)['id']
 
-	print(payload, current_user)
-
 	new_comment = model_to_dict(Comment.create(**payload))
 
 	return jsonify(data=new_comment, status={'code': 201, 'message': 'Success: Comment created!'}) 

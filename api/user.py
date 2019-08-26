@@ -16,12 +16,10 @@ from playhouse.shortcuts import model_to_dict
 user = Blueprint('users', 'user', url_prefix='/user')
 
 def save_picture(form_picture):
-	print(form_picture)
 
 	# encode file as a string for storage in the database
 	picture_byte = base64.b64encode(form_picture['file'].read())
 
-	# print(str)
 
 	string = picture_byte.decode()
 
@@ -46,8 +44,6 @@ def register():
 
 	payload['email'].lower()
 
-	print(payload)
-
 	try:
 
 		User.get(User.email == payload['email'])
@@ -59,8 +55,6 @@ def register():
 		try:
 
 			User.get(User.username == payload['username'])
-
-			print('A User with that username already exists')
 
 			return jsonify(data={}, status={'code': 401, 'message': 'A User with that username already exists'})
 
@@ -76,8 +70,6 @@ def register():
 
 			del user_dict['password']
 
-			print(user_dict)
-
 			return jsonify(data=user_dict, status={'code': 201, 'message': 'Success'}) 
 
 # Login (POST) route
@@ -85,19 +77,13 @@ def register():
 @user.route('/login', methods=['POST'])
 def login():
 
-	print('LOGIN')
-
 	payload = request.form.to_dict()
-
-	print(payload,'payload')
 
 	try:
 
 		user = User.get(User.username == payload['username'])
 
 		passwordCheck = check_password_hash(user.password, payload['password'])
-
-		print(passwordCheck, 'passwordCheck')
 
 		if not passwordCheck:
 			# we reach this point if neither username nor pwd correct
@@ -158,13 +144,10 @@ def show_user(id):
 
 		fav_dict = [model_to_dict(favorite) for favorite in favorites_media]
 
-		# print(favorites_dict)
-
 		for fav in fav_dict:
 			comments = Comment.select().where(Comment.media_id == fav['id'])
 			comments_dict = [model_to_dict(comment, exclude=[Comment.user_id.password]) for comment in comments]
 			fav['comments'] = comments_dict
-			print(fav, 'FAVS')
 
 			favorites = Favorite.select().where(Favorite.media_id == fav['id'])
 			favorites_dict = [model_to_dict(favorite, exclude=[Favorite.user_id.password]) for favorite in favorites]
@@ -175,8 +158,6 @@ def show_user(id):
 
 		user_dict['posted_media'] = medias_dict
 		user_dict['favorited_media'] = fav_dict
-
-		# print(user_dict, 'user_dict')
 
 		del user_dict['password']
 
@@ -198,7 +179,6 @@ def show_user(id):
 @user.route('/<id>', methods=['PUT'])
 def update_user(id):
 
-	print("PUT ROUTE EDIT PROFILE")
 	try:
 		# get current user data populate image if not changed
 		user = User.get_by_id(id)
@@ -213,25 +193,18 @@ def update_user(id):
 		# image file
 		# check if new image file was submitted
 		# if so, encode image for storage in the database
-		print(request.files.to_dict())
 		if len(request.files.to_dict()):
-			print('photo change');
 			pay_file = request.files
 			dict_file = pay_file.to_dict()
 			payload['image'] = save_picture(dict_file)
 		else:
-			print('photo not changed');
 			del payload['file']
 			payload['image'] = updated_user['image']	
 
 		if len(payload['password']):
-			print('password updated')
 			payload['password'] = generate_password_hash(payload['password'])
 		else:
-			print('password not updated')
 			payload['password'] = updated_user['password']
-
-		# print(payload, 'payload')
 
 		query = User.update(**payload).where(User.id == id)
 		query.execute()
