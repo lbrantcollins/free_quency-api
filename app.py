@@ -18,7 +18,7 @@ login_manager = LoginManager()
 app = Flask(__name__, static_url_path="", static_folder="static")
 
 # remove this later
-app.secret_key = 'SECRET_KEY'
+app.secret_key = os.environ.get('SECRET_KEY') or 'asdkfj;lsjf'
 
 login_manager.init_app(app)
 

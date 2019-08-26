@@ -6,7 +6,10 @@ import os
 
 from playhouse.db_url import connect
 
-DATABASE = connect(os.environ.get('DATABASE_URL'))
+if os.environ.get('HEROKU_ON'):
+	DATABASE = connect(os.environ.get('DATABASE_URL'))
+else: 
+	DATABASE=SqliteDatabase('free_quency.sqlite')
 
 class User(UserMixin, Model):
 	username = CharField()
