@@ -2,7 +2,11 @@ from peewee import *
 from flask_login import UserMixin
 import datetime
 
-DATABASE = SqliteDatabase('free_quency.sqlite')
+import os
+
+from playhouse.db_url import connect
+
+DATABASE = connect(os.environ.get('DATABASE_URL'))
 
 class User(UserMixin, Model):
 	username = CharField()
