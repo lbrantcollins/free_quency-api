@@ -18,7 +18,7 @@ login_manager = LoginManager()
 app = Flask(__name__, static_url_path="", static_folder="static")
 
 # remove this later
-app.secret_key = os.environ.get('REACT_APP_SECRET_KEY') or 'asdkfj;lsjf'
+app.secret_key = os.environ.get('REACT_APP_SECRET_KEY') or 'asdkfj3453457fhjklhfafalsjf'
 
 login_manager.init_app(app)
 
@@ -31,10 +31,11 @@ def load_user(user_id):
 		return None
 
 # CORS
-CORS(user, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
-CORS(media, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
-CORS(favorite, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
-CORS(comment, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(app)
+CORS(user, origins=['http://localhost:3000', "https://freequency.herokuapp.com"], supports_credentials=True)
+CORS(media, origins=['http://localhost:3000', "https://freequency.herokuapp.com"], supports_credentials=True)
+CORS(favorite, origins=['http://localhost:3000', "https://freequency.herokuapp.com"], supports_credentials=True)
+CORS(comment, origins=['http://localhost:3000', "https://freequency.herokuapp.com"], supports_credentials=True)
 
 app.register_blueprint(user)
 app.register_blueprint(media)
