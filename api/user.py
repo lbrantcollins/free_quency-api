@@ -32,6 +32,9 @@ def save_picture(form_picture):
 def register():
 
 	payload = request.form.to_dict()
+	
+	print('------------------ payload in register')
+	print(payload)
 
 	if len(request.files.to_dict()):
 		pay_file = request.files
@@ -44,8 +47,6 @@ def register():
 
 	payload['email'].lower()
 
-	print('------------------ payload in register')
-	print(payload)
 
 	try:
 
