@@ -30,10 +30,11 @@ def load_user(user_id):
 	except models.DoesNotExist:
 		return None
 
-CORS(user, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
-CORS(media, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
-CORS(favorite, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
-CORS(comment, origins=['http://localhost:3000', "#  https://freequency.herokuapp.com/"], supports_credentials=True)
+# CORS
+CORS(user, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(media, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(favorite, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
+CORS(comment, origins=['http://localhost:3000', "https://freequency.herokuapp.com/"], supports_credentials=True)
 
 app.register_blueprint(user)
 app.register_blueprint(media)
