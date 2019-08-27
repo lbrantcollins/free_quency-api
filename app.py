@@ -56,8 +56,8 @@ def index():
 	return 'FREE_QUENCYYYYYYY'
 
 if 'ON_HEROKU' in os.environ:
-    print('hitting ')
-    models.initialize
+    print('--------------------------- hitting ---------------------------')
+    models.initialize()
 
 if __name__ == '__main__':
 	models.initialize()
