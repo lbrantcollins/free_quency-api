@@ -44,6 +44,9 @@ def register():
 
 	payload['email'].lower()
 
+	print('------------------ payload in register')
+	print(payload)
+
 	try:
 
 		User.get(User.email == payload['email'])
