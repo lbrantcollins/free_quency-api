@@ -53,10 +53,10 @@ class Comment(Model):
 		database = DATABASE
 
 def initialize():
-	print("---------------- READY TO INITIALIZE DB ----------------")
+	print("--- READY TO INITIALIZE DB ----------------")
 	DATABASE.connect()
 	DATABASE.create_tables([User, Media, Favorite, Comment], safe=True)
-	print('tables created')
+	print('--- tables created -------------')
 	DATABASE.close()
 
 
